@@ -66,4 +66,7 @@ class Server
 				res.end()
 
 s = new Server
-http.createServer(s.RESThandler).listen(8080)
+port = process.argv[2] || 8080
+console.log "Creating server on port " + port
+http.createServer(s.RESThandler).listen(port)
+console.log "Ready."
