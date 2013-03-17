@@ -1,0 +1,85 @@
+<!DOCTYPE html> 
+<html>
+	<head>
+		<title>Simple message server reference client</title>
+		<style>
+			body {
+				overflow:hidden;
+			}
+			#container {
+				position:absolute;
+				top:40%;
+				width:100%;
+			}
+			div.line {
+				text-align: center;
+			}
+			#out {
+				width: 20em;
+				margin:0 auto;
+				text-align: center;
+			}
+		</style>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				$("#inForm").submit(function (event) {
+					event.preventDefault();
+
+					$.ajax({
+						url: "/put",
+						type: "POST",
+						data: $('#in').val(),
+						beforeSend: function () {
+							$('#status').text("...");
+						},
+						success: function () {
+							$('#status').text("OK");
+						},
+						error: function () {
+							$('#status').text("Failed");
+						}
+					});
+				});
+
+				$("#outButton").click(function (event) {
+					$.ajax({
+						url: "/take",
+						type: "GET",
+						dataType: "text",
+						beforeSend: function () {
+							$('#out').text("...");
+						},
+						success: function (data, status, jqXHR) {
+							if(jqXHR.status === 204) {
+								$('#out').text("No messages!");
+							} else {
+								$('#out').text(data);
+							}
+						},
+						error: function (jqXHR) {
+							$('#out').text("Failed");
+						}
+					});
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div class="line">
+				<form id="inForm">
+					<input type="text" id="in" size="30" />
+					<input type="submit" />
+					<span id="status"></span>
+				</form>
+			</div>
+			<div class="line">
+				<form id="outForm">
+					<input type="button" id="outButton" value="Get next message" />
+					<div id="out"></div>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
